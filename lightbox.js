@@ -134,4 +134,5 @@ addEvent(links[0], 'click', function(e) {
 
 //TODO
 //rajouter repositionnement de l'image lors de resize de l'écran.
-//get this as a plugin and put it into all a tag with the rel=lightbox atribute
+//get this as a plugin and put it into all a tag with the rel=lightbox attribute
+//Playing with git
