@@ -1,0 +1,63 @@
+img {
+	border: none;
+}
+
+html {
+	background: #3e3f40;
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 10%),
+		-webkit-linear-gradient(left, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 10%);
+	-webkit-background-size: 8px;
+	box-shadow: inset 0 0 200px 30px rgba(0,0,0,.3);
+}
+html, body {
+	margin: 0;
+	padding: 0;
+	/*height: 100%;*/
+}
+body {
+	font-family: 'Bilbo Swash Caps', cursive;
+	position: relative; /* sur le body permet de couvrir tout un div dessus au
+						lieu de s'arreter à la partie visible. */
+}
+
+h1 {
+	margin-top: 0;
+}
+
+#wrap {
+	width: 400px;
+	background: #d7c2c5;
+	padding: 20px;
+	margin: 0 auto;
+	box-shadow: inset 0 0 6px 0 rgba(0,0,0,.8);
+	-webkit-border-bottom-right-radius: 4px;
+	-webkit-border-bottom-left-radius: 10px;
+	text-align: center;
+}
+
+#wrap img {
+	border-radius: 6px;
+	box-shadow: 0 8px 8px -3px rgba(0,0,0,0.2);
+	margin-bottom: 20px;
+}
+
+#wrap img:hover {
+	opacity: 0.5;
+}
+
+.wrapper {
+	background: black;
+	background: rgba(0,0,0,0.5);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 101;
+}
+
+.wrapper img {
+	position: relative;
+	border-radius: 10px;
+	box-shadow: 0 0 6px 10px rgba(0,0,0,0.2);
+}
