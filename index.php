@@ -28,7 +28,6 @@
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
-		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 	</div>
 	<script src="lightbox.js"></script>
 </body>
