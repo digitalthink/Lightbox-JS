@@ -1,6 +1,6 @@
 ## Version 0.4
 ### Added custom arguments :
-* container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <code><a href="#" rel="lightbox">image</a></code>
+* container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <pre><code><a href="#" rel="lightbox">image</a></code></pre>
 * loadingImg: specify a custom image for the loading time
 
 ### Code optimized :
@@ -19,7 +19,7 @@ Start the plugin :
 * Resize, reposition when the browser is resized
 
 ### Known bugs:
-overflow:hidden not working on ie7
+overflow:hidden not working on IE7
 
 ## Version 0.3.3
 Now popup images are resized if needed when popup images > viewport
