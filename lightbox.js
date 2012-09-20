@@ -137,3 +137,4 @@ addEvent(links[0], 'click', function(e) {
 //get this as a plugin and put it into all a tag with the rel=lightbox attribute
 //quick note : Git seems realy powerfull !
 //Playing more with git !
+//voir s'il est possible de savoir si l'image est déjà chargé/dans le cache du navigateur et dès lors ne pas afficher le loading.gif.
