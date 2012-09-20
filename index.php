@@ -21,9 +21,9 @@
 		<p style="padding:0;margin:0;margin-bottom:20px;"><a id="outside" href="http://www.google.fr/">Go to Google.fr</a></p>
 		<a href="#" rel="lightbox"><img src="nice_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="murderedfruit1900x1200_thumb.png" alt="Murdered Fruits" /></a>
-		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
-		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
-		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
+		<a href="#" rel="lightbox"><img src="got_milk_thumb.png" alt="Got Milk ?" /></a>
+		<a href="#" rel="lightbox"><img src="mountain_thumb.png" alt="Mountain" /></a>
+		<a href="#" rel="lightbox"><img src="blonde_thumb.png" alt="Blond" /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>

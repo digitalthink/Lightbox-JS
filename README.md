@@ -1,3 +1,14 @@
+## Version 0.3.3
+Now popup images are resized if needed when popup images > viewport
+
+### TODO update:
+* Optimize the code if possible (it is ^^)
+* Make it easily customizable
+* Add animation fadinf, sliding, etc...
+* Add navigation and close buttons, for now close the image by clicking on the background or the popup image iteself
+* Add alt attributes in the popup image (maybe on thumbs too)
+* Resize, reposition when the brower is resized
+
 ## Version 0.3.1
 Added variable to easily change the loading img.
 
@@ -8,6 +19,7 @@ Added variable to easily change the loading img.
 * resizing the popup image if it's bigger than the viewport
 * Add navigation and close buttons, for now close the image by clicking on the background or the popup image iteself
 * Add alt attributes in the popup image (maybe on thumbs too)
+* Resize, reposition when the brower is resized
 
 ### Known bugs:
 overflow:hidden not working on ie7

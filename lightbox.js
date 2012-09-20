@@ -81,11 +81,43 @@ var sdotLightbox = {
 	},
 
 	imgLoading: function(elImg, screenH, screenW, elWrapper, elLoader) {
-		var imgW = elImg.width;
-		var imgH = elImg.height;
+		var imgW = elImg.width,
+			imgH = elImg.height,
+			propH = imgH / screenH, //proportion y
+			propW = imgW / screenW,	//proportion x
+			resultProp = (propW > propH) ? true : false; //greater proportion
+
+		//Resize image if needed
+		if (imgW > screenW || imgH > screenH) {
+			if (imgW > imgH) {
+				if (resultProp) {
+					elImg.width = screenW - 40;
+					elImg.height = (elImg.width * elImg.height) / imgW;
+				} else if (!resultProp) {
+					elImg.height = screenH - 40;
+					elImg.width = (elImg.width * elImg.height) / imgH;
+				}
+			} else if (imgH > imgW) {
+				if (!resultProp) {
+					elImg.height = screenH - 40;
+					elImg.width = (elImg.width * elImg.height) / imgH;
+				} else {
+					elImg.width = screenW - 40;
+					elImg.height = (elImg.width * elImg.height) / imgW ;
+				}
+			}
+		}
+
+		imgW = elImg.width;
+		imgH = elImg.height;
+
 		elImg.style.top = (screenH / 2 - imgH / 2 + sdotUtilities.getScrollPos()) + 'px';
 		elImg.style.left = (screenW / 2 - imgW / 2) + 'px';
 		elWrapper.replaceChild(elImg, elLoader);
+	},
+
+	createElement: function() {
+
 	},
 
 	popupInit: function(e) {
@@ -94,39 +126,34 @@ var sdotLightbox = {
 			return false;
 		}
 
-		//Execute before calculate screen width/height
+		//Execute before calculating screen width/height
 		document.body.style.overflow = 'hidden';
 		
-		var imgFN = target.src,
+		var imgFN = target.src, //get the thumb uri
+			imgFN = imgFN.slice(imgFN.lastIndexOf('/') + 1), //get only the file name
+			imgLoad = imgFN.replace('_thumb', ''), //img to load
 			screenW = sdotUtilities.getWindowSize().windowWidth,
-			screenH = sdotUtilities.getWindowSize().windowHeight;
-		
-		//get only the file name
-		imgFN = imgFN.slice(imgFN.lastIndexOf('/') + 1);
-		//img to load
-		var imgLoad = imgFN.replace('_thumb', '');
-		
-		var elWrapper = document.createElement('div');
+			screenH = sdotUtilities.getWindowSize().windowHeight,
+			elWrapper = document.createElement('div'),
+			elLoader = document.createElement('img'),
+			elImg = document.createElement('img');
+
 		elWrapper.className = 'wrapper';
 		elWrapper.id = 'wrapper';
 		elWrapper.style.top = '0';
 
-		var elLoader = document.createElement('img');
 		elLoader.id = 'loading';
 		elLoader.src = sdotLightbox.loadingImg;
 
-		var elImg = document.createElement('img');
-
-		elLoader.style.top = (screenH / 2 - 50) + 'px';
-		elLoader.style.left = (screenW / 2 - 50) + 'px';
-
-		//merge element
+		elLoader.style.top = (screenH / 2 - elLoader.height / 2 + sdotUtilities.getScrollPos()) + 'px';
+		elLoader.style.left = (screenW / 2 - elLoader.width / 2) + 'px';
+		
+		elLoader = elWrapper.appendChild(elLoader);
+		elWrapper = document.body.appendChild(elWrapper);
+		
 		sdotUtilities.addEvent.call(elWrapper, elWrapper, 'click', hiddenCall = function() {
 			sdotLightbox.hideImg(elImg);
 		});
-
-		elLoader = elWrapper.appendChild(elLoader);
-		elWrapper = document.body.appendChild(elWrapper);
 
 		sdotUtilities.addEvent(elImg, 'load', hiddenCall2 = function () {
 			sdotLightbox.imgLoading(elImg, screenH, screenW, elWrapper, elLoader);
@@ -134,11 +161,15 @@ var sdotLightbox = {
 
 		// added after the event load image, if not, ie7 will not display the image
 		elImg.src = imgLoad;
+
 		sdotUtilities.preventDefault(e);
 	}
 };
 
-//TODO
-//rajouter repositionnement de l'image lors de resize de l'écran.
-//get this as a plugin and put it into all a tag with the rel=lightbox attribute
-//voir s'il est possible de savoir si l'image est déjà chargé/dans le cache du navigateur et dès lors ne pas afficher le loading.gif.
+
+
+
+
+
+
+
