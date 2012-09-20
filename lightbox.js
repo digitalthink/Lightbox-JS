@@ -123,9 +123,7 @@ addEvent(links[0], 'click', function(e) {
 	});
 	elLoader = elWrapper.appendChild(elLoader);
 	elWrapper = document.body.appendChild(elWrapper);
-	console.log(elImg.src);
 	addEvent(elImg, 'load', hiddenCall2 = function () {
-		console.log('imgLoaded');
 		imgLoading(elImg, screenH, screenW, elWrapper, elLoader);
 	});
 	elImg.src = imgLoad; // added after the envent load image
