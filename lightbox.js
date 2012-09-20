@@ -69,10 +69,14 @@ var sdotUtilities = {
 */
 
 var sdotLightbox = {
-	links: document.getElementsByTagName('a'),
-	container: document.getElementById('wrap'),
-	loadingImg: 'loading-anim.gif',
+	init: function( config ) {
+		this.container = config.container;
+		this.links = this.container.getElementsByTagName('a');
+		this.loadingImg = config.loadingImg;
 
+		sdotUtilities.addEvent(this.container, 'click', this.popupInit);
+	},
+	
 	hideImg: function(elImg) {
 		sdotUtilities.removeEvent(document.getElementById('wrapper'), 'click', hiddenCall);
 		document.body.removeChild(document.getElementById('wrapper'));
@@ -80,7 +84,7 @@ var sdotLightbox = {
 		sdotUtilities.removeEvent(elImg, 'load', hiddenCall2);
 	},
 
-	imgLoading: function(elImg, screenH, screenW, elWrapper, elLoader) {
+	resizeImg: function( elImg, screenH, screenW ) {
 		var imgW = elImg.width,
 			imgH = elImg.height,
 			propH = imgH / screenH, //proportion y
@@ -108,11 +112,14 @@ var sdotLightbox = {
 			}
 		}
 
-		imgW = elImg.width;
-		imgH = elImg.height;
+		return { h: elImg.height, w: elImg.width };
+	},
 
-		elImg.style.top = (screenH / 2 - imgH / 2 + sdotUtilities.getScrollPos()) + 'px';
-		elImg.style.left = (screenW / 2 - imgW / 2) + 'px';
+	imgLoading: function( elImg, screenH, screenW, elWrapper, elLoader ) {
+		var sizes = sdotLightbox.resizeImg(elImg, screenH, screenW);	
+
+		elImg.style.top = (screenH / 2 - sizes.h / 2 + sdotUtilities.getScrollPos()) + 'px';
+		elImg.style.left = (screenW / 2 - sizes.w / 2) + 'px';
 		elWrapper.replaceChild(elImg, elLoader);
 	},
 
@@ -121,7 +128,9 @@ var sdotLightbox = {
 	},
 
 	popupInit: function(e) {
-		var target = sdotUtilities.getTarget(e);
+		var self = sdotLightbox,
+			target = sdotUtilities.getTarget(e);
+
 		if ( !target.parentNode.getAttribute('rel') || target.parentNode.getAttribute('rel') !== 'lightbox' ) {
 			return false;
 		}
@@ -130,7 +139,6 @@ var sdotLightbox = {
 		document.body.style.overflow = 'hidden';
 		
 		var imgFN = target.src, //get the thumb uri
-			imgFN = imgFN.slice(imgFN.lastIndexOf('/') + 1), //get only the file name
 			imgLoad = imgFN.replace('_thumb', ''), //img to load
 			screenW = sdotUtilities.getWindowSize().windowWidth,
 			screenH = sdotUtilities.getWindowSize().windowHeight,
@@ -143,20 +151,20 @@ var sdotLightbox = {
 		elWrapper.style.top = '0';
 
 		elLoader.id = 'loading';
-		elLoader.src = sdotLightbox.loadingImg;
+		elLoader.src = self.loadingImg;
 
-		elLoader.style.top = (screenH / 2 - elLoader.height / 2 + sdotUtilities.getScrollPos()) + 'px';
-		elLoader.style.left = (screenW / 2 - elLoader.width / 2) + 'px';
+		elLoader.style.top = (screenH / 2 - 50 + sdotUtilities.getScrollPos()) + 'px';
+		elLoader.style.left = (screenW / 2 - 50) + 'px';
 		
 		elLoader = elWrapper.appendChild(elLoader);
 		elWrapper = document.body.appendChild(elWrapper);
 		
 		sdotUtilities.addEvent.call(elWrapper, elWrapper, 'click', hiddenCall = function() {
-			sdotLightbox.hideImg(elImg);
+			self.hideImg(elImg);
 		});
 
 		sdotUtilities.addEvent(elImg, 'load', hiddenCall2 = function () {
-			sdotLightbox.imgLoading(elImg, screenH, screenW, elWrapper, elLoader);
+			self.imgLoading(elImg, screenH, screenW, elWrapper, elLoader);
 		});
 
 		// added after the event load image, if not, ie7 will not display the image
