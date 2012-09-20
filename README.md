@@ -1,6 +1,6 @@
 ## Version 0.4
 ### Added custom arguments :
-* container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <pre><code><a href="#" rel="lightbox">image</a></code></pre>
+* container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <code>&lt;a href="#" rel="lightbox"&gt;image&lt;/a&gt;</code>
 * loadingImg: specify a custom image for the loading time
 
 ### Code optimized :
