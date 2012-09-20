@@ -71,6 +71,7 @@ var sdotUtilities = {
 var sdotLightbox = {
 	links: document.getElementsByTagName('a'),
 	container: document.getElementById('wrap'),
+	loadingImg: 'loading-anim.gif',
 
 	hideImg: function(elImg) {
 		sdotUtilities.removeEvent(document.getElementById('wrapper'), 'click', hiddenCall);
@@ -88,7 +89,6 @@ var sdotLightbox = {
 	},
 
 	popupInit: function(e) {
-
 		var target = sdotUtilities.getTarget(e);
 		if ( !target.parentNode.getAttribute('rel') || target.parentNode.getAttribute('rel') !== 'lightbox' ) {
 			return false;
@@ -113,7 +113,7 @@ var sdotLightbox = {
 
 		var elLoader = document.createElement('img');
 		elLoader.id = 'loading';
-		elLoader.src = 'loading-anim.gif';
+		elLoader.src = sdotLightbox.loadingImg;
 
 		var elImg = document.createElement('img');
 
@@ -132,7 +132,8 @@ var sdotLightbox = {
 			sdotLightbox.imgLoading(elImg, screenH, screenW, elWrapper, elLoader);
 		});
 
-		elImg.src = imgLoad; // added after the envent load image
+		// added after the event load image, if not, ie7 will not display the image
+		elImg.src = imgLoad;
 		sdotUtilities.preventDefault(e);
 	}
 };
@@ -140,6 +141,4 @@ var sdotLightbox = {
 //TODO
 //rajouter repositionnement de l'image lors de resize de l'écran.
 //get this as a plugin and put it into all a tag with the rel=lightbox attribute
-//quick note : Git seems realy powerfull !
-//Playing more with git !
 //voir s'il est possible de savoir si l'image est déjà chargé/dans le cache du navigateur et dès lors ne pas afficher le loading.gif.

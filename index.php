@@ -19,8 +19,8 @@
 		<h1>The Popup in Vanilla JS.</h1>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<p style="padding:0;margin:0;margin-bottom:20px;"><a id="outside" href="http://www.google.fr/">Go to Google.fr</a></p>
-		<a href="#" rel="lightbox"><img src="nice_ass_thumb.png" alt="Nice Pose." /></a>
-		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
+		<a href="#" rel="lightbox"><img src="nice_thumb.png" alt="Nice Pose." /></a>
+		<a href="#" rel="lightbox"><img src="murderedfruit1900x1200_thumb.png" alt="Murdered Fruits" /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
