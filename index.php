@@ -30,5 +30,15 @@
 		<a href="#" rel="lightbox"><img src="img4_thumb.png" alt="Nice Pose." /></a>
 	</div>
 	<script src="lightbox.js"></script>
+	<script type="text/javascript">
+		//for testing
+		sdotUtilities.addEvent(document.getElementById('outside'), 'click', function(e){
+			sdotUtilities.preventDefault(e);
+			console.log('links clicked, preventDefault ok.');
+		});
+
+		sdotUtilities.addEvent(sdotLightbox.container, 'click', sdotLightbox.popupInit);
+
+	</script>
 </body>
 </html>
