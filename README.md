@@ -1,6 +1,6 @@
 ## Version 0.4
 ### Added custom arguments :
-* container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <a href="#" rel="lightbox">image</a>
+* container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <code><a href="#" rel="lightbox">image</a></code>
 * loadingImg: specify a custom image for the loading time
 
 ### Code optimized :
@@ -17,6 +17,9 @@ Start the plugin :
 * Add navigation and close buttons, for now close the image by clicking on the background or the popup image iteself
 * Add alt attributes in the popup image (maybe on thumbs too)
 * Resize, reposition when the browser is resized
+
+### Known bugs:
+overflow:hidden not working on ie7
 
 ## Version 0.3.3
 Now popup images are resized if needed when popup images > viewport
