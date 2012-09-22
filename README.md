@@ -3,7 +3,7 @@
 ### Added
 * Navigation arrow (back and forth in the gallery) and zoom button. The zoom button will only display when the image was resized. The zoomed image still remain centered if his not larger than the browser screen width.
 * The possibility to popup from a simple text link (not only from thumbnail).
-For simple text link, add a data-img attribute to the link with the path of the image (has alaways have the rel=lightbox).
+For simple text link, add a data-img attribute to the link with the path of the image (still need the rel=lightbox attribute).
 
 ### TODO update:
 * check to loop when at the start or the end of the gallery, for now it is trowing an error.
