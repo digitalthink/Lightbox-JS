@@ -1,3 +1,21 @@
+## Version 0.55
+
+### Added
+* Navigation arrow (back and forth in the gallery) and zoom button. The zoom button will only display when the image was resized. The zoomed image still remain centered if his not larger than the browser screen width.
+* The possibility to popup from a simple text link (not only from thumbnail).
+For simple text link, add a data-img attribute to the link with the path of the image.
+
+### TODO update:
+* check to loop when at the start or the end of the gallery, for now it is trowing an error.
+* Optimize eve more the code if possible (it is ^^), Still a lot to optimize.
+* Look for more customization
+* Add animation fading, sliding, etc...
+* Add alt attributes in the popup image (maybe on thumbs too)
+* Resize, reposition when the browser is resized
+
+### Notes
+The image thumb has to have the same name has the original image but with _thumb added in the filename.
+
 ## Version 0.4
 ### Added custom arguments :
 * container: the html element that contain the gallery, all links have to have the attribute rel set to lightbox like <code>&lt;a href="#" rel="lightbox"&gt;image&lt;/a&gt;</code>
