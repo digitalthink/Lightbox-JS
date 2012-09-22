@@ -14,7 +14,7 @@ For simple text link, add a data-img attribute to the link with the path of the 
 * Resize, reposition when the browser is resized
 
 ### Notes
-The image thumb has to have the same name as the original image but with _thumb added in the filename.
+The image thumb has to have the same name as the original image but with _thumb added to the filename.
 
 ## Version 0.4
 ### Added custom arguments :
