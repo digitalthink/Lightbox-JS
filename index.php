@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 	<meta charset="UTF-8" />
-	<!-- <link href='http://fonts.googleapis.com/css?family=Bilbo+Swash+Caps' rel='stylesheet' type='text/css'> -->
+	<link href='http://fonts.googleapis.com/css?family=Bilbo+Swash+Caps' rel='stylesheet' type='text/css'>
 
 	<link rel="stylesheet" href="style.css" type="text/css" />
 	<!--[if lt IE 8]>
@@ -12,14 +12,14 @@
     }
     </style>
     <![endif]-->
-	<title>The popup in Vanilla JS</title>
+	<title>Lightbox in Vanilla JS</title>
 </head>
 <body>
 	<div id="wrap">
-		<h1>The Popup in Vanilla JS.</h1>
+		<h1>Lightbox in Vanilla JS.</h1>
 		<a href="#" rel="lightbox"><img src="gallery/great_thumb.jpg" alt="Great Pose." /></a>
 		<a href="#" rel="lightbox"><img src="gallery/swim_thumb.jpg" alt="Go to Pool." /></a>
-		<p style="padding:0;margin:0;margin-bottom:20px;"><a href="#" data-img="img/infographie.png" rel="lightbox">Voir l'infographie</a></p>
+		<p style="padding:0;margin:0;margin-bottom:20px;"><a alt="Awesome Infographie!" href="#" data-img="img/infographie.png" rel="lightbox">Voir l'infographie</a></p>
 		<a href="#" rel="lightbox"><img src="gallery/imga_02_thumb.jpg" alt="Nice Pose." /></a>
 		<p style="padding:0;margin:0;margin-bottom:20px;"><a id="outside" href="http://www.google.fr/">Go to Google.fr</a></p>
 		<a href="#" rel="lightbox"><img src="gallery/nice_thumb.png" alt="Nice Pose." /></a>

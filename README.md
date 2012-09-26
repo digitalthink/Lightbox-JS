@@ -1,3 +1,18 @@
+## Version 0.6
+### Added
+* The gallery now loop, when you are at the end, the next image is the first one.
+* Key navigation (left arrow / right arrow / esc (hide lightbox))
+* Attribute alt content is displayed when the image is show in the lightbox.
+
+### TODO update:
+* Optimize even more the code if possible (it is ^^). Still a lot to optimize.
+* Look for more customization
+* Add animation fading, sliding, etc...
+* Resize, reposition when the browser is resized
+* Adding the alt attribute content when hover the thumb
+* add popup to tell pepole how to do key navigation
+* add an auto slide
+
 ## Version 0.55
 
 ### Added
