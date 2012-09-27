@@ -71,7 +71,7 @@ var sdotUtilities = {
 			})(e);
 		} else {
 			return (function() {
-				window.event.cancelBubble = true; 
+				window.event.cancelBubble = true;
 			})();
 		}
 	},
@@ -84,8 +84,57 @@ var sdotUtilities = {
 			}
 		}
 		return -1;
-	}
+	},
+
+	createElement: function( obj ) { //tag id img
+		var el = document.createElement(obj.tag);
+		obj.id && (el.id = obj.id);
+		obj.img && (el.src = obj.img);
+		obj.customAttr && el.setAttribute(obj.customAttr.attr, obj.customAttr.val);
+		obj.className && (el.className = obj.className);
+		if (obj.styles && typeof obj.styles === 'object') {
+			for (prop in obj.styles) {
+				if (obj.styles.hasOwnProperty(prop)) {
+					el.style[prop] = obj.styles[prop];
+				}
+			}
+		}
+
+		obj.append && obj.append.appendChild(el);
+
+		return el;
+	},
 };
+
+// temp implemantation
+
+ps = {},
+ps = window.ps,
+ps.subscriptions = [],
+ps.subscribe = function(name, callback){
+    ps.subscriptions.push({"name": name, "callback": callback});
+    return [name,callback];
+},
+ps.unsubscribe = function(args){
+    for(x=0;x<ps.subscriptions.length;x++){
+        if(ps.subscriptions[x].name == args[0], ps.subscriptions[x].callback == args[1])
+            ps.subscriptions.splice(x, 1);
+    }
+},
+ps.publish = function(name, args){
+    var temp = [];
+    if(ps.subscriptions.length > 0){
+        for(var x=0;x<ps.subscriptions.length;x++) {
+            if(ps.subscriptions[x].name == name)
+                temp.push({"fn":ps.subscriptions[x].callback});
+        }
+        for(x=0;x<temp.length;x++){
+            temp[x].fn.apply(this,[args]);
+        }
+    }
+};
+
+//
 
 /*
 **** LIGHTBOX ****
@@ -128,7 +177,7 @@ var sdotLightbox = {
 		sdotUtilities.addEvent(this.container, 'click', this.popupInit);
 	},
 	
-	hideImg: function(elImg) {
+	destroyLightbox: function(elImg) {
 		var elZoom = document.getElementById('zoom'),
 			elBody = document.body;
 		sdotUtilities.removeEvent(document.body, 'keyup', removeEventKey);
@@ -179,7 +228,7 @@ var sdotLightbox = {
 	},
 
 	createArrow: function(id, img, top, left, dir) {
-			var el = sdotLightbox.createElement({
+			var el = sdotUtilities.createElement({
 				id: id,
 				tag: 'img',
 				img: img,
@@ -229,7 +278,7 @@ var sdotLightbox = {
 		}
 
 		//the title body
-		self.titleBody = self.createElement({
+		self.titleBody = sdotUtilities.createElement({
 			tag: 'div', id: 'img-title', className: 'img-title', styles: {
 				top: (scrollPos + sdotLightbox.screenH / 2 - sizes.h / 2) + 'px',
 				left: (sdotLightbox.screenW / 2 - sizes.w / 2) + 'px',
@@ -240,7 +289,7 @@ var sdotLightbox = {
 	},
 
 	createZoomBtn: function(scrollPos, sizes, elRightArrow, elLeftArrow) {
-		var zoomImg = sdotLightbox.createElement({
+		var zoomImg = sdotUtilities.createElement({
 			id: 'zoom',
 			tag: 'div',
 			// img: 'img/zoom.png',
@@ -300,35 +349,38 @@ var sdotLightbox = {
 		sdotLightbox.titleBody.style.width = (sizes.w - 24) + 'px'; //substracte padding
 	},
 
-	createElement: function( obj ) { //tag id img
-		var el = document.createElement(obj.tag);
-		obj.id && (el.id = obj.id);
-		obj.img && (el.src = obj.img);
-		obj.customAttr && el.setAttribute(obj.customAttr.attr, obj.customAttr.val);
-		obj.className && (el.className = obj.className);
-		if (obj.styles && typeof obj.styles === 'object') {
-			for (prop in obj.styles) {
-				if (obj.styles.hasOwnProperty(prop)) {
-					el.style[prop] = obj.styles[prop];
-				}
-			}
-		}
-
-		obj.append && obj.append.appendChild(el);
-
-		return el;
-	},
-
 	imgLoading: function( elLoader ) {
 		var elImg = sdotLightbox.elImg,
 			sizes = sdotLightbox.resizeImg(elImg),
-			scrollPos = sdotUtilities.getScrollPos();	
+			scrollPos = sdotUtilities.getScrollPos();
 
 		elImg.style.top = (sdotLightbox.screenH / 2 - sizes.h / 2 + scrollPos) + 'px';
 		elImg.style.left = (sdotLightbox.screenW / 2 - sizes.w / 2) + 'px';
+		elImg.style.opacity = 0;
+
+
 		sdotLightbox.elWrapper.replaceChild(elImg, elLoader);
+		sdotLightbox.animation(elImg, 0, 1);
 
 		return sizes;
+	},
+
+	animation: function(el, start, end) {
+		var cur = start,
+			addRemove = (start > end) ? -0.2 : 0.2,
+			pubSub = (start > end) ? 'imgHide' : 'imgShow';
+
+		// function fadeOut() {
+			var interval = setInterval(function() {
+				el.style.opacity = cur;
+				cur += addRemove;
+				if (cur <= 0) {
+					clearInterval(interval);
+					ps.publish(pubSub);
+				}
+			}, 15);
+		// }
+		// fadeOut();
 	},
 
 	nextImg: function(imgLoad, createNav) {
@@ -336,9 +388,9 @@ var sdotLightbox = {
 		sdotLightbox.screenH = sdotUtilities.getWindowSize().windowHeight;
 		var self = sdotLightbox;
 
-		self.elImg = self.createElement({tag: 'img', id: 'currentImg'});
+		self.elImg = sdotUtilities.createElement({tag: 'img', id: 'currentImg'});
 
-		var elLoader = self.createElement({
+		var elLoader = sdotUtilities.createElement({
 			tag: 'img', id: 'loading', img: self.loadingImg, styles: {
 				top: (sdotLightbox.screenH / 2 - 50 + sdotUtilities.getScrollPos()) + 'px',
 				left: (sdotLightbox.screenW / 2 - 50) + 'px',
@@ -348,22 +400,33 @@ var sdotLightbox = {
 			append: sdotLightbox.elWrapper
 		});
 
-		sdotUtilities.addEvent(sdotLightbox.elImg, 'load', imgLoaded = function () {
-			if (!createNav) {
-				sdotLightbox.elWrapper.replaceChild(elLoader, document.getElementById('currentImg'));
-			}
-			var sizes = self.imgLoading(elLoader);
-			if (createNav) {
-				sdotLightbox.navCreation(sizes);
-			} else {
-				sdotLightbox.moveNav(sizes);
-				self.titleBody.innerHTML = self.allTitles[self.currentPos];
-			}
-			sdotLightbox.elWrapper.appendChild(sdotLightbox.titleBody);
-		});
+		if (!createNav) {
+			self.animation(document.getElementById('currentImg'), 1, 0);
 
-		// added after the event load image, if not, ie7 will not display the image
-		sdotLightbox.elImg.src = imgLoad;
+			var subEndFade = ps.subscribe('imgHide', function() {
+
+				sdotLightbox.elWrapper.replaceChild(elLoader, document.getElementById('currentImg'));
+
+				sdotUtilities.addEvent(sdotLightbox.elImg, 'load', imgLoaded = function () {
+					var sizes = self.imgLoading(elLoader);
+					sdotLightbox.moveNav(sizes);
+					self.titleBody.innerHTML = self.allTitles[self.currentPos];
+					sdotLightbox.elWrapper.appendChild(sdotLightbox.titleBody);
+				});
+
+				// added after the event load image, if not, ie7 will not display the image
+				sdotLightbox.elImg.src = imgLoad;
+				ps.unsubscribe(subEndFade);
+			});
+		} else {
+			sdotUtilities.addEvent(sdotLightbox.elImg, 'load', imgLoaded = function () {
+				var sizes = self.imgLoading(elLoader);
+				sdotLightbox.navCreation(sizes);
+				sdotLightbox.elWrapper.appendChild(sdotLightbox.titleBody);
+			});
+			// added after the event load image, if not, ie7 will not display the image
+			sdotLightbox.elImg.src = imgLoad;
+		}
 	},
 
 	getNewImgSrc: function(pos) {
@@ -376,23 +439,21 @@ var sdotLightbox = {
 	keyNavigation: function(e) {
 		var self = sdotLightbox,
 			key = e.keyCode;
-		console.log(e.keyCode);
 		if (key === 37) {
 			self.nextImg(self.getNewImgSrc(--self.currentPos));
 		} else if (key === 39) {
 			self.nextImg(self.getNewImgSrc(++self.currentPos));
 		} else if (e.keyCode === 27) {
-			self.hideImg(self.elImg);
-			console.log('ok');
+			self.destroyLightbox(self.elImg);
 		}
 	},
 
 	popupInit: function(e) {
 		var self = sdotLightbox,
-			target = sdotUtilities.getTarget(e);	
+			target = sdotUtilities.getTarget(e);
 
 		/* 	check if either:
-			- the parent node is not A with rel=lightbox 
+			- the parent node is not A with rel=lightbox
 			- or if the current node is not A with rel=lightbox */
 		if (target.parentNode.getAttribute('rel') !== 'lightbox') {
 			if ( !(target.tagName === 'A' && target.getAttribute('rel') === 'lightbox') ) {
@@ -407,9 +468,9 @@ var sdotLightbox = {
 		}
 
 		// Has to be executed before calculating screen width/height
-		document.body.style.overflow = 'hidden';	
+		document.body.style.overflow = 'hidden';
 
-		self.elWrapper = self.createElement({
+		self.elWrapper = sdotUtilities.createElement({
 			tag: 'div', className: 'wrapper', id: 'wrapper', styles: { top: 0 },
 			append: document.body
 		});
@@ -417,7 +478,7 @@ var sdotLightbox = {
 		self.nextImg(self.getNewImgSrc(self.currentPos), true);
 
 		sdotUtilities.addEvent.call(self.elWrapper, self.elWrapper, 'click', removeWrapper = function() {
-			self.hideImg(self.elImg);
+			self.destroyLightbox(self.elImg);
 		});
 
 		sdotUtilities.addEvent(document.body, 'keyup', removeEventKey = self.keyNavigation);

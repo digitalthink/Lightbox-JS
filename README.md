@@ -1,3 +1,7 @@
+##next version
+
+Added fadein fadeout
+
 ## Version 0.6
 ### Added
 * The gallery now loop, when you are at the end, the next image is the first one.
