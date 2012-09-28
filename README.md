@@ -1,6 +1,10 @@
 ##next version
 
-Added fadein fadeout
+Added New Branch 'animations'
+Added fadein fadeout (really slow)
+Redesign the navigation system
+
+TODO : make pub/sub private
 
 ## Version 0.6
 ### Added

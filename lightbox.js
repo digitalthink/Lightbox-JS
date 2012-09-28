@@ -90,6 +90,7 @@ var sdotUtilities = {
 		var el = document.createElement(obj.tag);
 		obj.id && (el.id = obj.id);
 		obj.img && (el.src = obj.img);
+		obj.html && (el.innerHTML = obj.html);
 		obj.customAttr && el.setAttribute(obj.customAttr.attr, obj.customAttr.val);
 		obj.className && (el.className = obj.className);
 		if (obj.styles && typeof obj.styles === 'object') {
@@ -107,6 +108,7 @@ var sdotUtilities = {
 };
 
 // temp implemantation
+// http://darcyclarke.me/development/library-agnostic-pubsub-publish-subscribe/
 
 ps = {},
 ps = window.ps,
@@ -173,6 +175,10 @@ var sdotLightbox = {
 		this.elImg; //current img in popup (as html element)
 		this.elWrapper; // the black screen
 		this.titleBody;
+		this.marginW = 20;
+		this.marginH = 60;
+		this.divNav;
+		this.divNavHeight = 24; //the height of the div nav bar, to calculate center of img
 
 		sdotUtilities.addEvent(this.container, 'click', this.popupInit);
 	},
@@ -185,8 +191,8 @@ var sdotLightbox = {
 		if (sdotLightbox.imgResized && elZoom) {
 			sdotUtilities.removeEvent(elZoom, 'click', zoomEvent);
 		}
-		sdotUtilities.removeEvent(document.getElementById('leftArrow'), 'click', leftArrowEvent);
-		sdotUtilities.removeEvent(document.getElementById('rightArrow'), 'click', rightArrowEvent);
+		sdotUtilities.removeEvent(document.getElementById('left-arrow'), 'click', leftArrowEvent);
+		sdotUtilities.removeEvent(document.getElementById('right-arrow'), 'click', rightArrowEvent);
 		elBody.removeChild(sdotLightbox.elWrapper);
 		elBody.style.overflow = 'visible';
 		sdotUtilities.removeEvent(elImg, 'load', imgLoaded);
@@ -194,54 +200,53 @@ var sdotLightbox = {
 	},
 
 	resizeImg: function( elImg ) {
-		sdotLightbox.realW = elImg.width;
-		sdotLightbox.realH = elImg.height;
-		var propH = sdotLightbox.realH / sdotLightbox.screenH, //proportion y
-			propW = sdotLightbox.realW / sdotLightbox.screenW,	//proportion x
+		var self = sdotLightbox;
+		self.realW = elImg.width;
+		self.realH = elImg.height;
+		var scrennWmargin = self.screenW - self.marginW;
+		var screenHmargin = self.screenH - self.marginH;
+		var propH = self.realH / screenHmargin, //proportion y
+			propW = self.realW / scrennWmargin,	//proportion x
 			resultProp = (propW > propH) ? true : false; //greater proportion
 
 		//Resize image if needed
-		if (sdotLightbox.realW > sdotLightbox.screenW || sdotLightbox.realH > sdotLightbox.screenH) {
-			sdotLightbox.imgResized = true;
-			if (sdotLightbox.realW > sdotLightbox.realH) {
+		if (self.realW > scrennWmargin || self.realH > screenHmargin) {
+			self.imgResized = true;
+			if (self.realW > self.realH) {
 				if (resultProp) {
-					elImg.width = sdotLightbox.screenW - 40;
-					elImg.height = (elImg.width * elImg.height) / sdotLightbox.realW;
+					elImg.width = scrennWmargin;
+					elImg.height = (elImg.width * elImg.height) / self.realW;
 				} else if (!resultProp) {
-					elImg.height = sdotLightbox.screenH - 40;
-					elImg.width = (elImg.width * elImg.height) / sdotLightbox.realH;
+					elImg.height = screenHmargin;
+					elImg.width = (elImg.width * elImg.height) / self.realH;
 				}
-			} else if (sdotLightbox.realH > sdotLightbox.realW) {
+			} else if (self.realH > self.realW) {
 				if (!resultProp) {
-					elImg.height = sdotLightbox.screenH - 40;
-					elImg.width = (elImg.width * elImg.height) / sdotLightbox.realH;
+					elImg.height = screenHmargin;
+					elImg.width = (elImg.width * elImg.height) / self.realH;
 				} else {
-					elImg.width = sdotLightbox.screenW - 40;
-					elImg.height = (elImg.width * elImg.height) / sdotLightbox.realW ;
+					elImg.width = scrennWmargin;
+					elImg.height = (elImg.width * elImg.height) / self.realW;
 				}
 			}
 		} else {
-			sdotLightbox.imgResized = false;
+			self.imgResized = false;
 		}
 
 		return { h: elImg.height, w: elImg.width };
 	},
 
-	createArrow: function(id, img, top, left, dir) {
+	createArrow: function(id, dir) {
 			var el = sdotUtilities.createElement({
 				id: id,
-				tag: 'img',
-				img: img,
+				tag: 'div',
 				styles: {
-					top: top,
-					left: left,
 					boxShadow: 'none',
 					cursor: 'pointer',
-					position: 'absolute',
 					zIndex: '101'
 				},
 				customAttr: { attr: 'data-dir', val: dir },
-				append: sdotLightbox.elWrapper
+				append: sdotLightbox.divNav
 			});
 
 			return el;
@@ -251,22 +256,22 @@ var sdotLightbox = {
 		var scrollPos = sdotUtilities.getScrollPos(),
 			self = sdotLightbox;
 
-		var elLeftArrow = this.createArrow(
-			'leftArrow', 'img/arrow_right.png',
-			(scrollPos + self.screenH / 2) + 'px',
-			(self.screenW / 2 - sizes.w / 2 - 24) + 'px',
-			'prev');
+		self.divNav = sdotUtilities.createElement({
+			tag: 'div', id: 'nav-bar', className: 'nav-bar', styles: {
+				width: self.screenW + 'px',
+				top: (scrollPos + self.screenH - 24) + 'px'
+			},
+			append: self.elWrapper
+		});
+
+		var elLeftArrow = this.createArrow('left-arrow', 'prev');
 
 		sdotUtilities.addEvent(elLeftArrow, 'click', leftArrowEvent = function(e) {
 			self.nextImg(self.getNewImgSrc(--self.currentPos));
 			sdotUtilities.stopPropagation(e);
 		});
 
-		var elRightArrow = this.createArrow(
-			'rightArrow', 'img/arrow_left.png',
-			(scrollPos + self.screenH / 2) + 'px',
-			(self.screenW / 2 + sizes.w / 2 - 15) + 'px',
-			'next');
+		var elRightArrow = this.createArrow('right-arrow', 'next');
 
 		sdotUtilities.addEvent(elRightArrow, 'click', rightArrowEvent = function(e) {
 			self.nextImg(self.getNewImgSrc(++self.currentPos));
@@ -280,7 +285,7 @@ var sdotLightbox = {
 		//the title body
 		self.titleBody = sdotUtilities.createElement({
 			tag: 'div', id: 'img-title', className: 'img-title', styles: {
-				top: (scrollPos + sdotLightbox.screenH / 2 - sizes.h / 2) + 'px',
+				top: (scrollPos + sdotLightbox.screenH / 2 - sizes.h / 2 - self.divNavHeight / 2) + 'px',
 				left: (sdotLightbox.screenW / 2 - sizes.w / 2) + 'px',
 				width: (sizes.w - 24) + 'px' //substracte padding
 			}
@@ -292,16 +297,12 @@ var sdotLightbox = {
 		var zoomImg = sdotUtilities.createElement({
 			id: 'zoom',
 			tag: 'div',
-			// img: 'img/zoom.png',
 			styles: {
-				top: (scrollPos + sdotLightbox.screenH / 2 - sizes.h / 2 - 12) + 'px',
-				left: (sdotLightbox.screenW / 2 + sizes.w / 2 - 10) + 'px',
 				boxShadow: 'none',
 				cursor: 'pointer',
-				position: 'absolute',
-				zIndex: '101'
+				float: 'right'
 			},
-			append: sdotLightbox.elWrapper
+			append: sdotLightbox.divNav
 		});
 
 		sdotUtilities.addEvent(zoomImg, 'click', zoomEvent = function(e) {
@@ -319,6 +320,7 @@ var sdotLightbox = {
 			elRightArrow.style.display = 'none';
 			elLeftArrow.style.display = 'none';
 			self.titleBody.style.display = 'none';
+			self.divNav.style.display = 'none';
 			zoomImg.style.display = 'none';
 			document.body.style.overflow = 'visible';
 			sdotUtilities.stopPropagation(e);
@@ -326,41 +328,38 @@ var sdotLightbox = {
 	},
 
 	moveNav: function(sizes) {
-		var elLeftArrow = document.getElementById('leftArrow'),
-			elRightArrow = document.getElementById('rightArrow'),
+		var elLeftArrow = document.getElementById('left-arrow'),
+			elRightArrow = document.getElementById('right-arrow'),
 			elZoom = document.getElementById('zoom'),
-			scrollPos = sdotUtilities.getScrollPos();
+			scrollPos = sdotUtilities.getScrollPos(),
+			self = sdotLightbox;
 
-		if (sdotLightbox.imgResized && elZoom) {
-			elZoom.style.top = (scrollPos + sdotLightbox.screenH / 2 - sizes.h / 2 - 12) + 'px';
-			elZoom.style.left = (sdotLightbox.screenW / 2 + sizes.w / 2 - 10) + 'px';
-		} else if ( sdotLightbox.imgResized && elZoom === null) {
+		if ( self.imgResized && elZoom === null ) {
 			this.createZoomBtn(scrollPos, sizes, elRightArrow, elLeftArrow);
-		} else if ( sdotLightbox.imgResized === false && elZoom ) {
+		} else if ( self.imgResized === false && elZoom ) {
 			sdotUtilities.removeEvent(elZoom, 'click', zoomEvent);
-			sdotLightbox.elWrapper.removeChild(elZoom);
+			self.divNav.removeChild(elZoom);
 		}
-		
-		elLeftArrow.style.left = (sdotLightbox.screenW / 2 - sizes.w / 2 - 24) + 'px';
-		elRightArrow.style.left = (sdotLightbox.screenW / 2 + sizes.w / 2 - 15) + 'px';
 
-		sdotLightbox.titleBody.style.top = (scrollPos + sdotLightbox.screenH / 2 - sizes.h / 2) + 'px';
-		sdotLightbox.titleBody.style.left = (sdotLightbox.screenW / 2 - sizes.w / 2) + 'px';
-		sdotLightbox.titleBody.style.width = (sizes.w - 24) + 'px'; //substracte padding
+		self.titleBody.style.top = (scrollPos + self.screenH / 2 - sizes.h / 2 - self.divNavHeight / 2) + 'px';
+		self.titleBody.style.left = (self.screenW / 2 - sizes.w / 2) + 'px';
+		self.titleBody.style.width = (sizes.w - 24) + 'px'; //substracte padding
 	},
 
 	imgLoading: function( elLoader ) {
-		var elImg = sdotLightbox.elImg,
-			sizes = sdotLightbox.resizeImg(elImg),
+		var self = sdotLightbox,
+			elImg = self.elImg,
+			sizes = self.resizeImg(elImg),
 			scrollPos = sdotUtilities.getScrollPos();
 
-		elImg.style.top = (sdotLightbox.screenH / 2 - sizes.h / 2 + scrollPos) + 'px';
-		elImg.style.left = (sdotLightbox.screenW / 2 - sizes.w / 2) + 'px';
+		//
+		elImg.style.top = (self.screenH / 2 - sizes.h / 2 + scrollPos - self.divNavHeight / 2) + 'px';
+		elImg.style.left = (self.screenW / 2 - sizes.w / 2) + 'px';
 		elImg.style.opacity = 0;
 
 
-		sdotLightbox.elWrapper.replaceChild(elImg, elLoader);
-		sdotLightbox.animation(elImg, 0, 1);
+		self.elWrapper.replaceChild(elImg, elLoader);
+		self.animation(elImg, 0, 1);
 
 		return sizes;
 	},
@@ -370,17 +369,14 @@ var sdotLightbox = {
 			addRemove = (start > end) ? -0.2 : 0.2,
 			pubSub = (start > end) ? 'imgHide' : 'imgShow';
 
-		// function fadeOut() {
-			var interval = setInterval(function() {
-				el.style.opacity = cur;
-				cur += addRemove;
-				if (cur <= 0) {
-					clearInterval(interval);
-					ps.publish(pubSub);
-				}
-			}, 15);
-		// }
-		// fadeOut();
+		var interval = setInterval(function() {
+			el.style.opacity = cur;
+			cur += addRemove;
+			if (cur < 0 || cur > 1) {
+				clearInterval(interval);
+				ps.publish(pubSub);
+			}
+		}, 15);
 	},
 
 	nextImg: function(imgLoad, createNav) {

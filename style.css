@@ -44,7 +44,7 @@ h1 {
 }
 
 #wrap {
-	width: 400px;
+	width: 520px;
 	background: #2a3735;
 	padding: 20px;
 	margin: 0 auto;
@@ -78,7 +78,7 @@ h1 {
 }
 
 .wrapper img {
-	-webkit-transition: none;
+	/*-webkit-transition: none;*/
 	position: relative;
 	border-radius: 2px;
 	box-shadow: 0 0 6px 10px rgba(0,0,0,0.2);
@@ -107,9 +107,57 @@ h1 {
 	background-position: left -23px;
 }
 
+.nav-bar {
+	position: absolute;
+	height: 24px;
+	text-align: center;
+	opacity: .7;
+	background: white;
+}
 
+.nav-bar span {
+	line-height: 24px;
+	margin:0;
+	padding:0;
+}
 
+#left-arrow, #right-arrow {
+	background: url(img/prev_next.png);
+	width: 44px;
+	height: 20px;
+	float: left;
+}
 
+#left-arrow {
+	background-position: left top;
+	margin-right: 20px;
+}
+
+#left-arrow:hover {
+	background-position: left 20px;
+}
+
+#right-arrow {
+	background-position: right top;
+}
+
+#right-arrow:hover {
+	background-position: right 20px;
+}
+
+.lcol {
+	float: left;
+	width: 250px;
+}
+
+.rcol {
+	float: right;
+	width: 250px;
+}
+
+.cf:before, .cf:after { content: ""; display: table; }
+.cf:after { clear: both; }
+.cf { zoom: 1; }
 
 
 
