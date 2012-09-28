@@ -200,8 +200,11 @@ var sdotLightbox = {
 	},
 
 	rollOut: function(e) {
-		var target = sdotUtilities.getTarget(e);
-		target.parentNode.removeChild(document.getElementById('sdotOver'));
+		var target = sdotUtilities.getTarget(e),
+			el = document.getElementById('sdotOver');
+		if (el) {
+			target.parentNode.removeChild(el);
+		}
 	},
 	
 	destroyLightbox: function() {
