@@ -1,10 +1,18 @@
-##next version
+## Version 0.7
 
-Added New Branch 'animations'
-Added fadein fadeout (really slow)
-Redesign the navigation system
+* Added fadein fadeout effect for image transitions (in javascript)
+* Redesigned navigation system
+* Added: Show the content of the alt attribute when hover the thumb. Not sur how to implemante that, with custom params...
 
-TODO : make pub/sub private
+### TODO update :
+* Looking for moving pub/sub from window global (window.ps)
+* clear css, divide current theme and need css for plugin
+* Center the image with margin auto, maybe better than calculating the center position
+* Optimize even more the code if possible (it is ^^). Still a lot to optimize.
+* Look for more customization
+* Resize, reposition when the browser is resized
+* add popup to tell pepole how to do key navigation
+* add an auto slide
 
 ## Version 0.6
 ### Added

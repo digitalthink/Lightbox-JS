@@ -105,36 +105,38 @@ var sdotUtilities = {
 
 		return el;
 	},
+
+	pubSub: function () {
+		ps = {};
+		ps = window.ps;
+		ps.subscriptions = [];
+		ps.subscribe = function(name, callback){
+			ps.subscriptions.push({"name": name, "callback": callback});
+			return [name,callback];
+		};
+		ps.unsubscribe = function(args){
+			for(x=0;x<ps.subscriptions.length;x++){
+				if(ps.subscriptions[x].name == args[0], ps.subscriptions[x].callback == args[1])
+					ps.subscriptions.splice(x, 1);
+			}
+		};
+		ps.publish = function(name, args){
+			var temp = [];
+			if(ps.subscriptions.length > 0){
+				for(var x=0;x<ps.subscriptions.length;x++) {
+					if(ps.subscriptions[x].name == name)
+						temp.push({"fn":ps.subscriptions[x].callback});
+				}
+				for(x=0;x<temp.length;x++){
+					temp[x].fn.apply(this,[args]);
+				}
+			}
+		};
+	}
 };
 
 // temp implemantation
 // http://darcyclarke.me/development/library-agnostic-pubsub-publish-subscribe/
-
-ps = {},
-ps = window.ps,
-ps.subscriptions = [],
-ps.subscribe = function(name, callback){
-    ps.subscriptions.push({"name": name, "callback": callback});
-    return [name,callback];
-},
-ps.unsubscribe = function(args){
-    for(x=0;x<ps.subscriptions.length;x++){
-        if(ps.subscriptions[x].name == args[0], ps.subscriptions[x].callback == args[1])
-            ps.subscriptions.splice(x, 1);
-    }
-},
-ps.publish = function(name, args){
-    var temp = [];
-    if(ps.subscriptions.length > 0){
-        for(var x=0;x<ps.subscriptions.length;x++) {
-            if(ps.subscriptions[x].name == name)
-                temp.push({"fn":ps.subscriptions[x].callback});
-        }
-        for(x=0;x<temp.length;x++){
-            temp[x].fn.apply(this,[args]);
-        }
-    }
-};
 
 //
 
@@ -181,22 +183,42 @@ var sdotLightbox = {
 		this.divNavHeight = 24; //the height of the div nav bar, to calculate center of img
 
 		sdotUtilities.addEvent(this.container, 'click', this.popupInit);
+		sdotUtilities.addEvent(this.container, 'mouseover', this.rollOver);
+		sdotUtilities.addEvent(this.container, 'mouseout', this.rollOut);
+		sdotUtilities.pubSub();
+	},
+
+	rollOver: function(e) {
+		var target = sdotUtilities.getTarget(e);
+		if (target.tagName === 'IMG') {
+			var el = sdotUtilities.createElement({
+				id: 'sdotOver', tag: 'div',
+				html: target.getAttribute('alt')
+			});
+			target.parentNode.insertBefore( el, target );
+		}
+	},
+
+	rollOut: function(e) {
+		var target = sdotUtilities.getTarget(e);
+		target.parentNode.removeChild(document.getElementById('sdotOver'));
 	},
 	
-	destroyLightbox: function(elImg) {
+	destroyLightbox: function() {
 		var elZoom = document.getElementById('zoom'),
-			elBody = document.body;
+			elBody = document.body,
+			self = sdotLightbox;
 		sdotUtilities.removeEvent(document.body, 'keyup', removeEventKey);
-		sdotUtilities.removeEvent(sdotLightbox.elWrapper, 'click', removeWrapper);
-		if (sdotLightbox.imgResized && elZoom) {
+		sdotUtilities.removeEvent(self.elWrapper, 'click', removeWrapper);
+		if (self.imgResized && elZoom) {
 			sdotUtilities.removeEvent(elZoom, 'click', zoomEvent);
 		}
 		sdotUtilities.removeEvent(document.getElementById('left-arrow'), 'click', leftArrowEvent);
 		sdotUtilities.removeEvent(document.getElementById('right-arrow'), 'click', rightArrowEvent);
-		elBody.removeChild(sdotLightbox.elWrapper);
+		sdotUtilities.removeEvent(self.elImg, 'load', imgLoaded);
+		elBody.removeChild(self.elWrapper);
 		elBody.style.overflow = 'visible';
-		sdotUtilities.removeEvent(elImg, 'load', imgLoaded);
-		sdotLightbox.elWrapper = null;
+		self.elWrapper = null;
 	},
 
 	resizeImg: function( elImg ) {
@@ -299,8 +321,7 @@ var sdotLightbox = {
 			tag: 'div',
 			styles: {
 				boxShadow: 'none',
-				cursor: 'pointer',
-				float: 'right'
+				cursor: 'pointer'
 			},
 			append: sdotLightbox.divNav
 		});
@@ -388,8 +409,8 @@ var sdotLightbox = {
 
 		var elLoader = sdotUtilities.createElement({
 			tag: 'img', id: 'loading', img: self.loadingImg, styles: {
-				top: (sdotLightbox.screenH / 2 - 50 + sdotUtilities.getScrollPos()) + 'px',
-				left: (sdotLightbox.screenW / 2 - 50) + 'px',
+				top: sdotUtilities.getScrollPos() + 'px',
+				left: '0px',
 				position: 'absolute',
 				zIndex: '101'
 			},
@@ -402,7 +423,7 @@ var sdotLightbox = {
 			var subEndFade = ps.subscribe('imgHide', function() {
 
 				sdotLightbox.elWrapper.replaceChild(elLoader, document.getElementById('currentImg'));
-
+				sdotUtilities.removeEvent(self.elImg, 'load', imgLoaded);
 				sdotUtilities.addEvent(sdotLightbox.elImg, 'load', imgLoaded = function () {
 					var sizes = self.imgLoading(elLoader);
 					sdotLightbox.moveNav(sizes);
@@ -440,7 +461,7 @@ var sdotLightbox = {
 		} else if (key === 39) {
 			self.nextImg(self.getNewImgSrc(++self.currentPos));
 		} else if (e.keyCode === 27) {
-			self.destroyLightbox(self.elImg);
+			self.destroyLightbox();
 		}
 	},
 
@@ -474,7 +495,7 @@ var sdotLightbox = {
 		self.nextImg(self.getNewImgSrc(self.currentPos), true);
 
 		sdotUtilities.addEvent.call(self.elWrapper, self.elWrapper, 'click', removeWrapper = function() {
-			self.destroyLightbox(self.elImg);
+			self.destroyLightbox();
 		});
 
 		sdotUtilities.addEvent(document.body, 'keyup', removeEventKey = self.keyNavigation);

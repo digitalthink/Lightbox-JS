@@ -15,6 +15,7 @@
 	<title>Lightbox in Vanilla JS</title>
 </head>
 <body>
+	<div class="fork-me-github"><a href="#"></a></div>
 	<div id="wrap" class="cf">
 		<h1>Lightbox in Vanilla JS.</h1>
 		<div class="lcol">
@@ -42,7 +43,7 @@
 		
 		sdotLightbox.init({
 			container: document.getElementById('wrap'),
-			loadingImg: 'img/loading-anim.gif'
+			loadingImg: 'img/loader2.gif'
 		});
 
 		//for testing
